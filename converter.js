@@ -1,5 +1,5 @@
 var uploadedFiles = Array();
-var convertedFile = "";
+var convertedFile = "test";
 
 async function add() {
     let fileInput = document.getElementById("file-input");
@@ -10,8 +10,25 @@ async function add() {
         let li = document.createElement("li");
         li.append(file.name);
         fileList.appendChild(li);
-        text = await (new Response(file)).text()
-        uploadedFiles.push(text);
+        // fileBin = await (new Response(file))
+        
+        let fileBuffer;
+        let reader = new FileReader();
+        reader.onload = function(event) {
+            fileBuffer = event.target.result;                 
+            console.log(fileBuffer)
+            console.log(window.btoa(fileBuffer))
+            uploadedFiles.push(window.btoa(fileBuffer));
+        };
+        reader.readAsBinaryString(file);
+    }
+}
+
+function reset() {
+    uploadedFiles = Array();
+    let fileList = document.getElementById("file-list");
+    while (fileList.firstChild) {
+        fileList.removeChild(fileList.firstChild);
     }
 }
 
@@ -26,6 +43,6 @@ function convert() {
     }
 }
 
-function download() {
-
-}
+setupDownloadLink = function(link, data) {
+    link.href = 'data:application/pdf;base64,' + data;
+};

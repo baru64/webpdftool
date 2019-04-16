@@ -39,6 +39,7 @@ license that can be found in the LICENSE file.
       }
     </script>
     Add file: <input onchange="add();" type="file" id="file-input"/>
+    <button onClick="reset();" id="reset-button">Reset</button>
     <ul id="file-list">
     </ul>
     <select id="operation-selector">
@@ -46,7 +47,7 @@ license that can be found in the LICENSE file.
         <option value="mergepdf">Merge PDFs</option>
     </select>
     <button onClick="convert();" id="convert-button">Convert</button>
-    <button onClick="download();" id="download-button">Download</button>
+    <a href="" id="link" onClick="setupDownloadLink(this, convertedFile)" download="out.pdf" id="download-button">Download</a>
     <script src="converter.js"></script>
   </body>
 </html>
