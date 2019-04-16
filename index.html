@@ -8,6 +8,7 @@ license that can be found in the LICENSE file.
   <head>
     <meta charset="utf-8" />
     <title>Go wasm</title>
+    <link rel="stylesheet" href="style.css">
   </head>
 
   <body>
@@ -38,16 +39,22 @@ license that can be found in the LICENSE file.
         inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
       }
     </script>
-    Add file: <input onchange="add();" type="file" id="file-input"/>
-    <button onClick="reset();" id="reset-button">Reset</button>
-    <ul id="file-list">
-    </ul>
-    <select id="operation-selector">
-        <option value="makepdf">Convert to PDF</option>
-        <option value="mergepdf">Merge PDFs</option>
-    </select>
-    <button onClick="convert();" id="convert-button">Convert</button>
-    <a href="" id="link" onClick="setupDownloadLink(this, convertedFile)" download="out.pdf" id="download-button">Download</a>
+
+    <div class="converter">
+        <h1>PDFtool</h1>
+        <input onchange="add();" type="file" id="file-input"/>
+        <label for="file-input">Add file</label>
+        <button onClick="reset();" id="reset-button">Reset</button>
+        <ul id="file-list">
+        </ul>
+        <select id="operation-selector">
+            <option value="makepdf">Convert to PDF</option>
+            <option value="mergepdf">Merge PDFs</option>
+        </select>
+        <button onClick="convert();" id="convert-button">Convert</button>
+        <a href="" id="link" onClick="setupDownloadLink(this, convertedFile)" download="out.pdf" id="download-button">Download</a>
+    </div>
+
     <script src="converter.js"></script>
   </body>
 </html>
