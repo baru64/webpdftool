@@ -24,6 +24,14 @@ button {
     font-size: 16px;
 }
 
+li button {
+    background-color: inherit;
+    padding: 2px;
+    float: right;
+    font-size: large;
+    font-weight: bold;
+}
+
 select {
     background-color: orangered;
     border: none;

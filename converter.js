@@ -1,4 +1,5 @@
 var uploadedFiles = Array();
+var uploadedFilesCount = 0;
 var convertedFile = "test";
 
 async function add() {
@@ -8,10 +9,23 @@ async function add() {
     for(let i = 0; i < files.length; i++) {
         let file = files.item(i);
         let li = document.createElement("li");
-        li.append(file.name);
-        fileList.appendChild(li);
-        // fileBin = await (new Response(file))
+        li.setAttribute("id", "file-" + uploadedFilesCount);
         
+        let buttonUp = document.createElement("button");
+        buttonUp.setAttribute("id", "fileUp-" + uploadedFilesCount);
+        buttonUp.setAttribute("onclick", 'swap(this, "up")');
+        buttonUp.append("↑");
+        let buttonDown = document.createElement("button");
+        buttonDown.setAttribute("id", "fileDown-" + uploadedFilesCount);
+        buttonDown.setAttribute("onclick", 'swap(this, "down")');
+        buttonDown.append("↓");
+
+        li.append(file.name);
+        li.appendChild(buttonUp);
+        li.appendChild(buttonDown);
+        fileList.appendChild(li);
+        uploadedFilesCount++;
+
         let fileBuffer;
         let reader = new FileReader();
         reader.onload = function(event) {
@@ -24,8 +38,13 @@ async function add() {
     }
 }
 
+function swap(element, direction) { // TODO
+
+}
+
 function reset() {
     uploadedFiles = Array();
+    uploadedFilesCount = 0;
     let fileList = document.getElementById("file-list");
     while (fileList.firstChild) {
         fileList.removeChild(fileList.firstChild);
