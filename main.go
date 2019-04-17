@@ -9,6 +9,7 @@ import (
 	"io"
 	"syscall/js"
 
+	"github.com/unidoc/unidoc/pdf/creator"
 	pdf "github.com/unidoc/unidoc/pdf/model"
 )
 
@@ -77,13 +78,11 @@ var document = js.Global().Get("document")
 func mergePdfs(this js.Value, args []js.Value) interface{} {
 	files := js.Global().Get("uploadedFiles")
 	len := files.Length()
-	// output := make([]string, 5)
+
 	pdfBuffer := NewPdfOutBuffer([]byte{})
 	pdfWriter := pdf.NewPdfWriter()
 
 	for i := 0; i < len; i++ {
-		// println(files.Index(i).String())
-		// output = append(output, files.Index(i).String())
 		println("------- File: ", i)
 		println(files.Index(i).String())
 		fileBytes, err := base64.StdEncoding.DecodeString(files.Index(i).String())
@@ -120,7 +119,11 @@ func mergePdfs(this js.Value, args []js.Value) interface{} {
 			}
 		}
 	}
-	pdfWriter.Write(pdfBuffer)
+	err := pdfWriter.Write(pdfBuffer)
+	if err != nil {
+		println(err)
+		return err
+	}
 	outBytes := pdfBuffer.buffer.Bytes()
 	out := base64.StdEncoding.EncodeToString(outBytes)
 	println("OUTPUT:", string(out))
@@ -128,12 +131,48 @@ func mergePdfs(this js.Value, args []js.Value) interface{} {
 	return nil
 }
 
-func imgsToPdf() {
+func imgsToPdf(this js.Value, args []js.Value) interface{} {
+	files := js.Global().Get("uploadedFiles")
+	len := files.Length()
+	newPdf := creator.New()
+	pdfBuffer := NewPdfOutBuffer([]byte{})
 
+	for i := 0; i < len; i++ {
+		println("------- File: ", i)
+		println(files.Index(i).String())
+		fileBytes, err := base64.StdEncoding.DecodeString(files.Index(i).String())
+		if err != nil {
+			println(err)
+			return err
+		}
+		img, err := creator.NewImageFromData(fileBytes)
+		if err != nil {
+			println(err)
+			return err
+		}
+		img.ScaleToWidth(612.0)
+
+		height := 612.0 * img.Height() / img.Width()
+		newPdf.SetPageSize(creator.PageSize{612, height})
+		newPdf.NewPage()
+		img.SetPos(0, 0)
+		_ = newPdf.Draw(img)
+	}
+	err := newPdf.Write(pdfBuffer)
+	if err != nil {
+		println(err)
+		return err
+	}
+	outBytes := pdfBuffer.buffer.Bytes()
+	out := base64.StdEncoding.EncodeToString(outBytes)
+	println("OUTPUT:", string(out))
+	js.Global().Set("convertedFile", out)
+	return nil
 }
 
 func registerCallbacks() {
 	js.Global().Set("mergePdfs", js.FuncOf(mergePdfs))
+	js.Global().Set("imgsToPdf", js.FuncOf(imgsToPdf))
 }
 
 func main() {

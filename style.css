@@ -52,8 +52,8 @@ input[type=file] + label {
 }
 
 div.converter {
-    width: 30%;
-    margin-left: 35%;
+    width: 380px;
+    margin-left: calc(50% - 190px);
     background-color: deepskyblue;
     padding: 0 1% 1% 1%;
     box-shadow: 5px 10px black;
